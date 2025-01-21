@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smartphone Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .results-section {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .results-section h2 {
+            font-size: 24px;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .recommendations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .phone-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: contain;
+            background: #f8f8f8;
+            padding: 20px;
+        }
+
+        .phone-info {
+            padding: 20px;
+        }
+
+        .phone-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .phone-price {
+            color: #2563eb;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .key-specs {
+            margin: 15px 0;
+        }
+
+        .key-specs h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .specs-list {
+            display: grid;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .buy-btn, .specs-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+        }
+
+        .buy-btn {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .specs-btn {
+            background-color: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .compare-button-container {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .compare-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #1f2937;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: #dc2626;
+            text-align: center;
+            padding: 20px;
+            background: #fee2e2;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        /* No Results Styles */
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .no-results-icon {
+            font-size: 48px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .no-results-title {
+            font-size: 24px;
+            color: #1f2937;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .no-results-message {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .try-again-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .try-again-btn:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Add Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <div class="loading-text">Finding the best smartphones for you...</div>
+    </div>
+    <div class="container">
+        <h1>Smartphone Recommendation System</h1>
+        
+        <div class="form-container">
+            <div class="sliders-container">
+                <h2>Rate Your Preferences (1-10)</h2>
+                <div class="slider-group">
+                    <label for="design">Design</label>
+                    <input type="range" id="design" min="1" max="10" value="5">
+                    <span class="value">5</span>
+                </div>
+                <div class="slider-group">
+                    <label for="display">Display</label>
+                    <input type="range" id="display" min="1" max="10" value="5">
+                    <span class="value">5</span>
+                </div>
+                <div class="slider-group">
+                    <label for="software">Software</label>
+                    <input type="range" id="software" min="1" max="10" value="5">
+                    <span class="value">5</span>
+                </div>
+                <div class="slider-group">
+                    <label for="performance">Performance</label>
+                    <input type="range" id="performance" min="1" max="10" value="5">
+                    <span class="value">5</span>
+                </div>
+                <div class="slider-group">
+                    <label for="battery">Battery Life</label>
+                    <input type="range" id="battery" min="1" max="10" value="5">
+                    <span class="value">5</span>
+                </div>
+                <div class="slider-group">
+                    <label for="camera">Camera</label>
+                    <input type="range" id="camera" min="1" max="10" value="5">
+                    <span class="value">5</span>
+                </div>
+            </div>
+
+            <div class="budget-container">
+                <h2>Your Budget</h2>
+                <div class="input-group">
+                    <span class="currency">₹</span>
+                    <input type="number" id="budget" value="20000" min="5000">
+                </div>
+            </div>
+
+            <div class="priority-container">
+                <h2>Drag to Set Priority (Top = Highest)</h2>
+                <div class="priority-list" id="priorityList">
+                    <div class="priority-item" draggable="true" data-id="design">Design</div>
+                    <div class="priority-item" draggable="true" data-id="display">Display</div>
+                    <div class="priority-item" draggable="true" data-id="software">Software</div>
+                    <div class="priority-item" draggable="true" data-id="performance">Performance</div>
+                    <div class="priority-item" draggable="true" data-id="battery">Battery Life</div>
+                    <div class="priority-item" draggable="true" data-id="camera">Camera</div>
+                </div>
+            </div>
+
+            <button id="submitBtn" class="submit-btn">Get Recommendations</button>
+        </div>
+
+        <div id="results" class="results-container hidden">
+            <h2>Recommended Smartphones</h2>
+            <div class="recommendations"></div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Previous event listeners remain the same
+
+            // Form submission
+            document.getElementById('submitBtn').addEventListener('click', async () => {
+                // Show loading screen
+                document.getElementById('loadingScreen').style.display = 'flex';
+
+                const preferences = [
+                    parseInt(document.getElementById('design').value),
+                    parseInt(document.getElementById('display').value),
+                    parseInt(document.getElementById('software').value),
+                    parseInt(document.getElementById('performance').value),
+                    parseInt(document.getElementById('battery').value),
+                    parseInt(document.getElementById('camera').value)
+                ];
+
+                const budget = parseInt(document.getElementById('budget').value);
+                
+                const priorityItems = document.querySelectorAll('.priority-item');
+                const priorityList = Array.from(priorityItems).map(item => 
+                    6 - Array.from(priorityItems).indexOf(item)
+                );
+
+                try {
+                    const response = await fetch('/get_recommendations', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            preferences,
+                            budget,
+                            priority_list: priorityList
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    // Hide loading screen
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    
+                    if (data.success) {
+                        if (data.recommendations.length === 0) {
+                            showNoResults(budget);
+                        } else {
+                            displayResults(data.recommendations);
+                        }
+                    } else {
+                        showError('Error: ' + data.error);
+                    }
+                } catch (error) {
+                    // Hide loading screen
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    showError('Error connecting to server');
+                }
+            });
+
+            function showNoResults(budget) {
+                const resultsContainer = document.getElementById('results');
+                const recommendationsDiv = resultsContainer.querySelector('.recommendations');
+                
+                recommendationsDiv.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">📱</div>
+                        <div class="no-results-title">No Smartphones Found</div>
+                        <div class="no-results-message">
+                            We couldn't find any smartphones within your budget of ₹${budget.toLocaleString()}.
+                            Try increasing your budget or adjusting your preferences.
+                        </div>
+                        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="try-again-btn">
+                            Try Different Preferences
+                        </button>
+                    </div>
+                `;
+                
+                resultsContainer.classList.remove('hidden');
+            }
+
+            // Previous functions remain the same
+        });
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Specifications - Smartphone Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Full Specifications</h1>
+        
+        <div class="specs-container">
+            {% for phone in phones %}
+            <div class="specs-card">
+                <div class="specs-header">
+                    <img src="{{ phone.img_links }}" alt="{{ phone.mobiles }}" class="specs-image">
+                    <div class="specs-title">
+                        <h2>{{ phone.mobiles }}</h2>
+                        <div class="specs-price">Price: ₹{{ "{:,}".format(phone.b_Price) }}</div>
+                        {% if phone.Summary %}
+                        <div class="about-item">
+                            <h3>About This Item</h3>
+                            <p>{{ phone.Summary }}</p>
+                        </div>
+                        {% endif %}
+                        <a href="{{ phone.best_buy_links }}" target="_blank" class="buy-button">Buy Now</a>
+                    </div>
+                </div>
+
+                <div class="specs-section">
+                    <h3>Key Specifications</h3>
+                    <div class="specs-grid">
+                        <div class="specs-item">
+                            <span class="specs-label">Display:</span> {{ phone.k_Display }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Processor:</span> {{ phone.k_Processor }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Front Camera:</span> {{ phone.k_Front_Camera }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Rear Camera:</span> {{ phone.k_Rear_Camera }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">RAM:</span> {{ phone.k_RAM }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Storage:</span> {{ phone.k_Storage }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Battery:</span> {{ phone.k_Battery_Capacity }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">OS:</span> {{ phone.k_OS }}
+                        </div>
+                    </div>
+                </div>
+
+                {% if phone.Pros or phone.Cons %}
+                <div class="pros-cons">
+                    {% if phone.Pros %}
+                    <div class="pros">
+                        <h4>Pros</h4>
+                        <p>{{ phone.Pros }}</p>
+                    </div>
+                    {% endif %}
+                    {% if phone.Cons %}
+                    <div class="cons">
+                        <h4>Cons</h4>
+                        <p>{{ phone.Cons }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="specs-section">
+                    <h3>Detailed Specifications</h3>
+                    <div class="specs-grid">
+                        <div class="specs-item">
+                            <span class="specs-label">Brand:</span> {{ phone.Brand }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Model:</span> {{ phone.Model }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Release Date:</span> {{ phone.Release_date }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Form Factor:</span> {{ phone.Form_factor }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Fast Charging:</span> {{ phone.Fast_charging }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Colours:</span> {{ phone.Colours }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Refresh Rate:</span> {{ phone.Refresh_Rate }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Resolution:</span> {{ phone.Resolution }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Protection Type:</span> {{ phone.Protection_type }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Aspect Ratio:</span> {{ phone.Aspect_ratio }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Processor:</span> {{ phone.Processor }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Processor Make:</span> {{ phone.Processor_make }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">RAM:</span> {{ phone.RAM }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Internal Storage:</span> {{ phone.Internal_storage }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Operating System:</span> {{ phone.Operating_system }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Skin:</span> {{ phone.Skin }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Face Unlock:</span> {{ phone.Face_unlock }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Proximity Sensor:</span> {{ phone.Proximity_sensor }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Accelerometer:</span> {{ phone.Accelerometer }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Ambient Light Sensor:</span> {{ phone.Ambient_light_sensor }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Gyroscope:</span> {{ phone.Gyroscope }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">GPS:</span> {{ phone.GPS }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Bluetooth:</span> {{ phone.Bluetooth }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">NFC:</span> {{ phone.NFC }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Headphones:</span> {{ phone.Headphones }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">Number of SIMs:</span> {{ phone.Number_of_SIMs }}
+                        </div>
+                        <div class="specs-item">
+                            <span class="specs-label">5G:</span> {{ phone['5G'] }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
